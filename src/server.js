@@ -45,7 +45,7 @@ app.get("/api/articles", async (req, res) => {
   const { name } = req.params;
   const { uid } = req.user;
 
-  const article = await db.collection("articlesUpvotes").find({ }).toArray();
+  const article = await db.collection("articles").find({ }).toArray();
 
   if (article.length > 0) {
     res.json(article);
@@ -66,7 +66,7 @@ app.get("/api/articles/:name", async (req, res) => {
   const { name } = req.params;
   const { uid } = req.user;
 
-  const article = await db.collection("articlesUpvotes").findOne({ name });
+  const article = await db.collection("articles").findOne({ name });
 
   if (article) {
     const upvoteIds = article.upvoteIds || [];
@@ -89,13 +89,13 @@ app.put("/api/articles/:name/upvote", async (req, res) => {
   const { name } = req.params;
   const {uid} = req.user;
 
-  const article = await db.collection("articlesUpvotes").findOne({ name });
+  const article = await db.collection("articles").findOne({ name });
 
   if (article) {
     const upvoteIds = article.upvoteIds || [];
     const canUpvote = uid && !upvoteIds.includes(uid);
     if (canUpvote){
-      await db.collection("articlesUpvotes").updateOne(
+      await db.collection("articles").updateOne(
         { name },
         {
           $inc: { upvotes: 1 },
@@ -104,7 +104,7 @@ app.put("/api/articles/:name/upvote", async (req, res) => {
       );
     }
   
-  const updatedArticle = await db.collection("articlesUpvotes").findOne({ name });
+  const updatedArticle = await db.collection("articles").findOne({ name });
  
     res.json(updatedArticle);
   } else {
@@ -117,13 +117,13 @@ app.post("/api/articles/:name/comments", async (req, res) => {
   const {  text } = req.body;
   const {email} = req.user; 
 
-  await db.collection("articlesUpvotes").updateOne(
+  await db.collection("articles").updateOne(
     { name },
     {
       $push: { comments: { postedBy: email, text } },
     }
   );
-  const article = await db.collection("articlesUpvotes").findOne({ name });
+  const article = await db.collection("articles").findOne({ name });
   if (article) {
     res.json(article);
   } else {
@@ -137,7 +137,7 @@ app.post("/api/articles", async (req, res) => {
   const newContent = content.split(";");
 
 
-  const newArticle = await db.collection("articlesUpvotes").insertOne({
+  const newArticle = await db.collection("articles").insertOne({
     name:name,
     title:title,
     content:newContent,
@@ -146,7 +146,7 @@ app.post("/api/articles", async (req, res) => {
     upvoteIds:[],
   });
  
-  const article = await db.collection("articlesUpvotes").findOne({ name });
+  const article = await db.collection("articles").findOne({ name });
   if (article) {
     res.json(article);
   } else {
