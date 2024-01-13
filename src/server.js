@@ -10,10 +10,10 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-/* const credentials = JSON.parse(fs.readFileSync('./credentials.json' ));
+const credentials = JSON.parse(fs.readFileSync('./etc/secrets/credentials.json' ));
 
 
-admin.initializeApp({ credential: admin.credential.cert(credentials) }); */
+admin.initializeApp({ credential: admin.credential.cert(credentials) });
 
 const PORT = process.env.PORT || 8000;
 
